@@ -21,6 +21,16 @@ pub struct ApiResponse<T> {
   pub data: Option<T>,
 }
 
+impl<T> ApiResponse<T> {
+  pub fn ok(data: T) -> ApiResponse<T> {
+    ApiResponse{
+      code: ApiResponseCode::Ok as i32,
+      msg: None,
+      data: Some(data)
+    }
+  }
+}
+
 impl<T> IntoResponse for ApiResponse<T>
 where
   T: Serialize
