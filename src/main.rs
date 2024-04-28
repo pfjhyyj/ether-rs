@@ -9,7 +9,7 @@ async fn main() {
 
     let app = router::get_router();
 
-    let port = utils::env::get_env("API_PORT");
+    let port = utils::env::get_env::<String>("API_PORT");
     let address = format!("127.0.0.1:{}", port);
     let listener = tokio::net::TcpListener::bind(address)
         .await

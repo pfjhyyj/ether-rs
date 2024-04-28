@@ -1,4 +1,4 @@
-use std::env;
+use std::{env, fmt::Debug, str::FromStr};
 
 // Load the configuration from the .env files
 // references:
@@ -18,6 +18,11 @@ pub fn load_config() {
   dotenvy::dotenv().ok();
 }
 
-pub fn get_env(key: &str) -> String {
-  env::var(key).expect(&format!("{} must be set", key))
+pub fn get_env<T>(key: &str) -> T
+where
+  T: FromStr,
+  T::Err: Debug
+{
+  let var = env::var(key).expect(&format!("{} must be set!", key));
+  var.parse::<T>().expect(&format!("{} can not be parse to correct type!", key))
 }

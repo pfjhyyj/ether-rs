@@ -2,6 +2,7 @@
 
 use std::time::Duration;
 
+use migration::{Migrator, MigratorTrait};
 use sea_orm::{ConnectOptions, Database as SeaOrmDatabase};
 pub use sea_orm::DatabaseConnection;
 use tokio::sync::OnceCell;
@@ -12,12 +13,12 @@ static DB_CONNECTION: OnceCell<DatabaseConnection> = OnceCell::const_new();
 pub async fn get_db_connection() -> &'static DatabaseConnection {
   DB_CONNECTION
     .get_or_init(|| async {
-      let host = env::get_env("POSTGRES_HOST");
-      let port = env::get_env("POSTGRES_PORT");
-      let user = env::get_env("POSTGRES_USER");
-      let password = env::get_env("POSTGRES_PASSWORD");
-      let database = env::get_env("POSTGRES_DB");
-      let schema = env::get_env("POSTGRES_SCHEMA");
+      let host = env::get_env::<String>("POSTGRES_HOST");
+      let port = env::get_env::<String>("POSTGRES_PORT");
+      let user = env::get_env::<String>("POSTGRES_USER");
+      let password = env::get_env::<String>("POSTGRES_PASSWORD");
+      let database = env::get_env::<String>("POSTGRES_DB");
+      let schema = env::get_env::<String>("POSTGRES_SCHEMA");
       let url = format!("postgres://{}:{}@{}:{}/{}?currentSchema={}", user, password, host, port, database, schema);
 
       let opt = ConnectOptions::new(url)
