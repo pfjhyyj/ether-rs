@@ -14,7 +14,7 @@ tokio = { version = "1.37.0", features = ["full"] }
 client = { path = "client" }
 utils = { path = "utils" }
 migration = { path = "migration" }
-validator = { version = "0.17.0", features = ["derive"] }
+validator = { version = "0.18.1", features = ["derive"] }
 tracing = "0.1.40"
 tracing-subscriber = { version = "0.3.18", features = ["env-filter"] }
 async-trait = "0.1.79"
