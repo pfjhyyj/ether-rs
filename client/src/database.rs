@@ -2,7 +2,6 @@
 
 use std::time::Duration;
 
-use migration::{Migrator, MigratorTrait};
 use sea_orm::{ConnectOptions, Database as SeaOrmDatabase};
 pub use sea_orm::DatabaseConnection;
 use tokio::sync::OnceCell;
