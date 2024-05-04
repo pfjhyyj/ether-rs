@@ -6,6 +6,10 @@ mod modules;
 
 #[tokio::main]
 async fn main() {
+    tracing_subscriber::fmt()
+        .with_max_level(tracing::Level::DEBUG)
+        .init();
+    
     utils::env::load_config();
 
     let app = router::get_router();
