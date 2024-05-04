@@ -1,6 +1,7 @@
 mod common;
 mod router;
 mod controller;
+mod modules;
 
 
 #[tokio::main]

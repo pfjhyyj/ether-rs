@@ -1,4 +1,5 @@
 use axum::extract::rejection::{FormRejection, JsonRejection};
+use sea_orm::{error, DbErr};
 use thiserror::Error;
 
 #[derive(Debug, Error)]
@@ -12,6 +13,9 @@ pub enum ServerError {
     #[error(transparent)]
     AxumJsonRejection(#[from] JsonRejection),
 
-    #[error("Unknown error")]
-    UnknownError,
+    #[error(transparent)]
+    DatabaseError(#[from] DbErr),
+
+    #[error(transparent)]
+    UnknownError(#[from] anyhow::Error),
 }

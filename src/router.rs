@@ -1,10 +1,10 @@
 use axum::Router;
 
-use crate::controller;
+use crate::modules;
 
 
 pub fn get_router() -> Router {
   let router = Router::new()
-    .nest("/api", controller::set_router());
+    .nest("/api", modules::set_router());
   router
 }

@@ -55,7 +55,22 @@ impl MigrationTrait for Migration {
                     )
                     .to_owned()
             )
-        .await
+        .await?;
+
+        let insert = Query::insert()
+            .into_table(User::Table)
+            .columns([User::UserId, User::Username, User::Password, User::Nickname, User::Status])
+            .values_panic([
+                0.into(),
+                "ether_admin".into(),
+                "$2b$12$T43BHiuqzvV8DpN5TClvIeBse2dk0PBO4G9WVnFU/lY7mwcHDmnFy".into(),
+                "ether admin".into(),
+                0.into(),
+            ])
+            .to_owned();
+        manager.exec_stmt(insert).await?;
+
+        Ok(())
     }
 
     async fn down(&self, manager: &SchemaManager) -> Result<(), DbErr> {
