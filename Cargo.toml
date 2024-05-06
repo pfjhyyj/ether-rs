@@ -23,3 +23,5 @@ thiserror = "1.0.58"
 bcrypt = "0.15.1"
 anyhow = "1.0.82"
 tower-http = { version = "0.5.2", features = ["trace"] }
+jsonwebtoken = "9.3.0"
+chrono = "0.4.38"
