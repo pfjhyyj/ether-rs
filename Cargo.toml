@@ -1,0 +1,13 @@
+[package]
+name = "rust-ether"
+version = "0.1.0"
+edition = "2021"
+
+[workspace]
+members = [".", "entity", "migration", "utils"]
+
+[dependencies]
+entity = { path = "entity" }
+migration = { path = "migration" }
+utils = { path = "utils" }
+sea-orm = { version = "1.0.1", features = ["sqlx-postgres", "runtime-tokio-rustls", "debug-print"] }
