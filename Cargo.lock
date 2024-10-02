@@ -127,6 +127,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "anyhow"
+version = "1.0.89"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "86fdf8605db99b54d3cd748a44c6d04df638eb5dafb219b135d0149bd0db01f6"
+
+[[package]]
 name = "arrayvec"
 version = "0.7.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2727,6 +2733,7 @@ checksum = "06abde3611657adf66d383f00b093d7faecc7fa57071cce2578660c9f1010821"
 name = "utils"
 version = "0.1.0"
 dependencies = [
+ "anyhow",
  "const-hex",
  "digest",
  "dotenvy",
@@ -2735,6 +2742,7 @@ dependencies = [
  "rand",
  "sha1",
  "sha2",
+ "time",
 ]
 
 [[package]]
