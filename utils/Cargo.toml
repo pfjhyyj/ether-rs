@@ -15,3 +15,5 @@ sha1 = "0.10.6"
 sha2 = "0.10.8"
 time = "0.3.36"
 sea-orm = { version = "1.0.1", features = ["sqlx-postgres", "runtime-tokio-rustls", "debug-print"] }
+redis = { version = "0.27.2", features = ["r2d2", "tokio-comp"]}
+r2d2 = "0.8.10"
