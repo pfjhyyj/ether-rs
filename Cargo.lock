@@ -1784,7 +1784,6 @@ version = "0.1.0"
 dependencies = [
  "entity",
  "migration",
- "sea-orm",
  "utils",
 ]
 
@@ -2740,6 +2739,7 @@ dependencies = [
  "hmac",
  "md-5",
  "rand",
+ "sea-orm",
  "sha1",
  "sha2",
  "time",

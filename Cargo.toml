@@ -10,4 +10,3 @@ members = [".", "entity", "migration", "utils"]
 entity = { path = "entity" }
 migration = { path = "migration" }
 utils = { path = "utils" }
-sea-orm = { version = "1.0.1", features = ["sqlx-postgres", "runtime-tokio-rustls", "debug-print"] }
