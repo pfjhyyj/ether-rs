@@ -6,3 +6,4 @@ pub mod redis;
 pub mod logger;
 pub mod middleware;
 pub mod jwt;
+pub mod result;
