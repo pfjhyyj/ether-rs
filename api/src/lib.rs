@@ -1,4 +1,6 @@
 pub mod router;
+pub mod controller;
+pub mod service;
 
 pub async fn serve() {
     let port = utils::env::get_env::<String>("API_PORT");

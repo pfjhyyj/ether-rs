@@ -52,6 +52,14 @@ pub struct ApiOk<T> {
   pub data: T,
 }
 
+impl<T> ApiOk<T> {
+  pub fn new(data: T) -> Self {
+    Self {
+      data,
+    }
+  }
+}
+
 impl <T> IntoResponse for ApiOk<T>
 where 
   T: Serialize
@@ -66,13 +74,29 @@ pub struct ApiError {
   pub message: String,
 }
 
+impl ApiError {
+  pub fn new(code: i32, message: String) -> Self {
+    Self {
+      code,
+      message,
+    }
+  }
+
+  pub fn err_param(message: String) -> Self {
+    Self {
+      code: ApiResponseCode::RequestError as i32,
+      message,
+    }
+  }
+}
+
 impl IntoResponse for ApiError {
   fn into_response(self) -> Response {
     ApiResponse::error(self.code, self.message).into_response()
   }
 }
 
-pub type Result<T> = std::result::Result<ApiOk<T>, ApiError>;
+pub type Result<T> = std::result::Result<T, ApiError>;
 
 #[derive(Debug, Serialize)]
 pub struct PageResponse<T> {
