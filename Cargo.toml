@@ -4,9 +4,11 @@ version = "0.1.0"
 edition = "2021"
 
 [workspace]
-members = [".", "entity", "migration", "utils"]
+members = [".", "api", "entity", "migration", "utils"]
 
 [dependencies]
+api = { path = "api" }
 entity = { path = "entity" }
 migration = { path = "migration" }
+tokio = { version = "1.40.0", features = ["full"] }
 utils = { path = "utils" }

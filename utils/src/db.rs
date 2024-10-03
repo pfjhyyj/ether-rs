@@ -7,7 +7,7 @@ use crate::env;
 
 static DB_CONNECTION: OnceLock<DatabaseConnection> = OnceLock::new();
 
-pub async fn init_db_connection() {
+pub async fn init_db() {
   let url = env::get_env::<String>("DATABASE_URL");
 
   let opt = ConnectOptions::new(url)

@@ -6,7 +6,7 @@ type RedisPool = r2d2::Pool<redis::Client>;
 
 static REDIS_POOL: OnceLock<RedisPool> = OnceLock::new();
 
-pub async fn init_redis() {
+pub fn init_redis() {
   let url = env::get_env::<String>("REDIS_URL");
 
   let client = redis::Client::open(url)
