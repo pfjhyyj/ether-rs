@@ -73,3 +73,9 @@ impl IntoResponse for ApiError {
 }
 
 pub type Result<T> = std::result::Result<ApiOk<T>, ApiError>;
+
+#[derive(Debug, Serialize)]
+pub struct PageResponse<T> {
+  pub total: i64,
+  pub data: Vec<T>,
+}
