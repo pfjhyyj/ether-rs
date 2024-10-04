@@ -51,3 +51,11 @@ pub fn nonce(size: usize) -> String {
     let mut rng = rand::thread_rng();
     Alphanumeric.sample_string(&mut rng, size)
 }
+
+pub fn bcrypt(password: &str) -> String {
+    bcrypt::hash(password, bcrypt::DEFAULT_COST).unwrap()
+}
+
+pub fn bcrypt_verify(password: &str, hash: &str) -> bool {
+    bcrypt::verify(password, hash).unwrap()
+}

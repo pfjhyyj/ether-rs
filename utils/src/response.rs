@@ -88,6 +88,13 @@ impl ApiError {
       message,
     }
   }
+
+  pub fn err_db(message: String) -> Self {
+    Self {
+      code: ApiResponseCode::DbError as i32,
+      message,
+    }
+  }
 }
 
 impl IntoResponse for ApiError {
