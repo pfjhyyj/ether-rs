@@ -5,11 +5,11 @@ use serde::{Deserialize, Serialize};
 use crate::jwt::verify_jwt_token;
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
-struct Claims {
+pub struct Claims {
   // sub: subject, user id
-  sub: String,
+  pub sub: String,  
   // exp: expiration time
-  exp: usize,
+  pub exp: usize,
 }
 
 

@@ -1,4 +1,3 @@
-use axum::Json;
 use entity::user;
 use sea_orm::{EntityTrait, QueryFilter, ColumnTrait};
 use serde::{Deserialize, Serialize};
@@ -31,30 +30,42 @@ pub struct LoginByUserNameResponse {
 pub async fn login_by_username(
   ValidatedJson(req): ValidatedJson<LoginByUserNameRequest>,
 ) -> Result<ApiOk<LoginByUserNameResponse>> {
-    if let Err(e) = req.validate() {
-        return Err(ApiError::err_param(e.to_string()))
+    let user = get_by_username(&req.username).await?;
+
+    let is_valid = utils::hash::bcrypt_verify(&req.password, &user.password);
+    if !is_valid {
+        return Err(ApiError::err_param("Invalid username or password".to_string()));
     }
 
-    let resp = LoginByUserNameResponse {
-        access_token: "123".to_string(),
-        expire_time: "123".to_string(),
+    //  7 days to expire
+    let expire_time = chrono::Utc::now().timestamp() + 60 * 60 * 24 * 7;
+    let claims = utils::middleware::jwt::Claims {
+        sub: user.user_id.to_string(),
+        exp: expire_time as usize,
     };
+    let token = utils::jwt::generate_jwt_token(&claims).map_err(|e| {
+        tracing::error!(error = ?e, "Failed to generate jwt token");
+        ApiError::err_unknown("Failed to generate jwt token".to_string())
+    })?;
 
+    let resp = LoginByUserNameResponse {
+        access_token: token,
+        expire_time: expire_time.to_string(),
+    };
     Ok(ApiOk::new(resp))
 }
 
-// async fn _login_by_username(username: &str) {
-//     // get user by username
-//     let db = utils::db::conn();
-//     let user = user::Entity::find()
-//         .filter(user::Column::Username.eq(username))
-//         .one(db)
-//         .await
-//         .map_err(|e| {
-//             tracing::error!(error = ?e, "Failed to get user by username");
-//             ApiError::err_param("Invalid username or password".to_string())
-//         })?
-//         .ok_or(ApiError::err_param("Invalid username or password".to_string()));
+async fn get_by_username(username: &str) -> Result<user::Model> {
+    let db = utils::db::conn();
+    let user = user::Entity::find()
+        .filter(user::Column::Username.eq(username))
+        .one(db)
+        .await
+        .map_err(|e| {
+            tracing::error!(error = ?e, "Failed to get user by username");
+            ApiError::err_db("Failed to get user".to_string())
+        })?
+        .ok_or(ApiError::err_param("Invalid username or password".to_string()))?;
 
-
-// }
+    Ok(user)
+}

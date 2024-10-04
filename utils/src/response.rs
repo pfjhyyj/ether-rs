@@ -95,6 +95,13 @@ impl ApiError {
       message,
     }
   }
+
+  pub fn err_unknown(message: String) -> Self {
+    Self {
+      code: ApiResponseCode::UnknownError as i32,
+      message,
+    }
+  }
 }
 
 impl IntoResponse for ApiError {
