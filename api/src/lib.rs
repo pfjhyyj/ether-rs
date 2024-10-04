@@ -1,6 +1,4 @@
-pub mod router;
-pub mod controller;
-pub mod service;
+pub mod modules;
 
 pub async fn serve() {
     let port = utils::env::get_env::<String>("API_PORT");
@@ -9,5 +7,5 @@ pub async fn serve() {
         .await
         .unwrap();
     println!("Listening on: {}", listener.local_addr().unwrap());
-    axum::serve(listener, router::app::init()).await.unwrap();
+    axum::serve(listener, modules::get_router()).await.unwrap();
 }

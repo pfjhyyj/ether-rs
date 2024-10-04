@@ -1,8 +1,10 @@
 use axum::Json;
-use axum_extra::extract::WithRejection;
+use entity::user;
+use sea_orm::{EntityTrait, QueryFilter, ColumnTrait};
 use serde::{Deserialize, Serialize};
-use utils::{rejection::IRejection, response::{ApiError, ApiOk, Result}};
+use utils::{rejection::ValidatedJson, response::{ApiError, ApiOk, Result}};
 use validator::Validate;
+
 
 #[derive(Debug, Deserialize, Validate)]
 pub struct LoginByUserNameRequest {
@@ -27,7 +29,7 @@ pub struct LoginByUserNameResponse {
 }
 
 pub async fn login_by_username(
-  WithRejection(Json(req), _): IRejection<Json<LoginByUserNameRequest>>,
+  ValidatedJson(req): ValidatedJson<LoginByUserNameRequest>,
 ) -> Result<ApiOk<LoginByUserNameResponse>> {
     if let Err(e) = req.validate() {
         return Err(ApiError::err_param(e.to_string()))
@@ -40,3 +42,19 @@ pub async fn login_by_username(
 
     Ok(ApiOk::new(resp))
 }
+
+// async fn _login_by_username(username: &str) {
+//     // get user by username
+//     let db = utils::db::conn();
+//     let user = user::Entity::find()
+//         .filter(user::Column::Username.eq(username))
+//         .one(db)
+//         .await
+//         .map_err(|e| {
+//             tracing::error!(error = ?e, "Failed to get user by username");
+//             ApiError::err_param("Invalid username or password".to_string())
+//         })?
+//         .ok_or(ApiError::err_param("Invalid username or password".to_string()));
+
+
+// }

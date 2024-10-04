@@ -1,45 +1,30 @@
-use axum::{extract::rejection::JsonRejection, response::{IntoResponse, Response}};
-use axum_extra::extract::WithRejection;
-use thiserror::Error;
+use axum::{async_trait, extract::{rejection::JsonRejection, FromRequest, Request}, Json};
+use serde::de::DeserializeOwned;
+use validator::Validate;
 
 use crate::response::{ApiError, ApiResponseCode};
 
-#[derive(Debug, Error)]
-pub enum MyRejection {
-  #[error(transparent)]
-  JSONExtractor(#[from] JsonRejection),
-}
+#[derive(Debug, Clone, Copy, Default)]
+pub struct ValidatedJson<T>(pub T);
 
-impl IntoResponse for MyRejection {
-  fn into_response(self) -> Response {
-    let err = match self {
-      MyRejection::JSONExtractor(x) => match x {
-        JsonRejection::JsonDataError(e) => {
-          ApiError {
-            code: ApiResponseCode::RequestError as i32,
-            message: e.body_text(),
-          }
-        }
-        JsonRejection::JsonSyntaxError(e) => {
-          ApiError {
-            code: ApiResponseCode::RequestError as i32,
-            message: e.body_text(),
-          }
-        }
-        JsonRejection::MissingJsonContentType(e) => {
-          ApiError {
-            code: ApiResponseCode::RequestError as i32,
-            message: e.body_text(),
-          }
-        }
-        _ => ApiError {
-          code: ApiResponseCode::RequestError as i32,
-          message: "Request error".to_string(),
-        },
-      },
-    };
-    err.into_response()
+#[async_trait]
+impl <T, S> FromRequest<S> for ValidatedJson<T>
+where 
+  T: DeserializeOwned + Validate,
+  S: Send + Sync,
+  Json<T>: FromRequest<S, Rejection = JsonRejection>,
+{
+  type Rejection = ApiError;
+
+  async fn from_request(req: Request, state: &S) -> Result<Self, ApiError> {
+      let Json(value) = Json::<T>::from_request(req, state)
+        .await
+        .map_err(|err| {
+          ApiError::new(ApiResponseCode::RequestError as i32, format!("JSON parsing error: {}", err))
+        })?;
+      value.validate().map_err(|e| {
+        ApiError::new(ApiResponseCode::RequestError as i32, format!("Validation error: {}", e))
+      })?;
+      Ok(ValidatedJson(value))
   }
 }
-
-pub type IRejection<T> = WithRejection<T, MyRejection>;

@@ -1,14 +1,15 @@
-use axum::{body::Body, http::Request, routing::post, Router};
+use axum::{body::Body, http::Request, Router};
 use tower_http::trace::TraceLayer;
 
-use crate::controller;
+pub mod auth;
+pub mod user;
 
-pub fn init() -> Router {
-  let auth = Router::new()
-    .route("/login", post(controller::auth::login_by_username));
+pub fn get_router() -> Router {
+  let modules = Router::new()
+    .nest("/auth", auth::get_router());
   
   let app = Router::new()
-    .nest("/api", auth)
+    .nest("/api", modules)
     .layer(axum::middleware::from_fn(utils::middleware::cors::handle))
     .layer(axum::middleware::from_fn(utils::middleware::log::handle))
     .layer(
