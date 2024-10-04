@@ -7,7 +7,7 @@ use http::HeaderMap;
 pub async fn handle(request: Request, next: Next) -> Response {
     let req_method = request.method().to_string();
     let req_uri = request.uri().to_string();
-    let req_header = header_to_string(request.headers());
+    // let req_header = header_to_string(request.headers());
 
 
     let response = next.run(request).await;
@@ -15,7 +15,7 @@ pub async fn handle(request: Request, next: Next) -> Response {
     tracing::info!(
         method = req_method,
         uri = req_uri,
-        headers = req_header,
+        // headers = req_header,
         "processed request"
     );
 
