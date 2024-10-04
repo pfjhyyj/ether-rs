@@ -1,6 +1,8 @@
 use axum::{routing::post, Router};
 
 pub mod login;
+pub mod register;
+pub mod logout;
 
 pub fn get_router() -> Router {
     Router::new()
