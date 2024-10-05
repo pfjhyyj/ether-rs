@@ -1,4 +1,5 @@
 use entity::user;
+use redis::Commands;
 use sea_orm::{EntityTrait, QueryFilter, ColumnTrait};
 use serde::{Deserialize, Serialize};
 use utils::{rejection::ValidatedJson, response::{ApiError, ApiOk, Result}};
@@ -48,6 +49,8 @@ pub async fn login_by_username(
         ApiError::err_unknown("Failed to generate jwt token".to_string())
     })?;
 
+    set_token_cache(&token, user.user_id)?;
+
     let resp = LoginByUserNameResponse {
         access_token: token,
         expire_time: expire_time.to_string(),
@@ -68,4 +71,24 @@ async fn get_by_username(username: &str) -> Result<user::Model> {
         .ok_or(ApiError::err_param("Invalid username or password".to_string()))?;
 
     Ok(user)
+}
+
+
+fn set_token_cache(token: &str, user_id: i64) -> Result<()> {
+    let mut conn = match utils::redis::redis_pool().get() {
+        Ok(c) => c,
+        Err(e) => {
+            tracing::error!(error = ?e, "Failed to get redis connection");
+            return Err(ApiError::err_unknown("Failed to get redis connection".to_string()));
+        }
+    };
+
+    let key = format!("token:{}", user_id);
+    let _: () = conn.set(key, token)
+        .map_err(|e| {
+            tracing::error!(error = ?e, "Failed to set token cache");
+            ApiError::err_unknown("Failed to set token cache".to_string())
+        })?;
+        
+    Ok(())
 }

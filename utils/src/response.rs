@@ -102,6 +102,13 @@ impl ApiError {
       message,
     }
   }
+
+  pub fn err_unauthorized(message: String) -> Self {
+    Self {
+      code: ApiResponseCode::AuthError as i32,
+      message,
+    }
+  }
 }
 
 impl IntoResponse for ApiError {

@@ -139,6 +139,7 @@ dependencies = [
  "axum",
  "chrono",
  "entity",
+ "redis",
  "sea-orm",
  "serde",
  "serde_json",
