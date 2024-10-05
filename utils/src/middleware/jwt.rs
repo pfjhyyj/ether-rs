@@ -34,25 +34,25 @@ pub async fn handle(mut request: Request, next: Next) -> Response {
         },
     };
     if token_data.exp == 0 {
-        return ApiError::err_unauthenticated("Token invalid".to_string()).into_response();
+        return ApiError::err_unauthenticated().into_response();
     }
 
     let mut conn = match crate::redis::redis_pool().get() {
         Ok(c) => c,
         Err(e) => {
             tracing::error!(error = ?e, "Failed to get redis connection");
-            return ApiError::err_unknown("Failed to get redis connection".to_string())
+            return ApiError::err_unknown()
                 .into_response();
         }
     };
     let key = format!("token:{}", token_data.sub);
     let token_result: Result<String, ApiError> = conn
         .get(key)
-        .map_err(|_| ApiError::err_unauthenticated("Token invalid".to_string()));
+        .map_err(|_| ApiError::err_unauthenticated());
     match token_result {
         Ok(token) => {
             if token.is_empty() {
-                return ApiError::err_unauthenticated("Token invalid".to_string()).into_response();
+                return ApiError::err_unauthenticated().into_response();
             }
         }
         Err(e) => return e.into_response(),

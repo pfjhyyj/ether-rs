@@ -3,9 +3,9 @@ use entity::user;
 use sea_orm::{ColumnTrait, EntityTrait, QueryFilter, ActiveModelTrait, Set};
 use serde::{Deserialize, Serialize};
 use utils::{
-    middleware::jwt::Claims,
-    response::{ApiError, ApiOk, Result},
+    middleware::jwt::Claims, rejection::ValidatedJson, response::{ApiError, ApiOk, Result}
 };
+use validator::Validate;
 
 #[derive(Debug, Serialize)]
 #[serde(rename_all = "camelCase")]
@@ -45,7 +45,7 @@ async fn get_user_by_user_id(user_id: i64) -> Result<user::Model> {
     user.ok_or(ApiError::err_param("User not found".to_string()))
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Validate)]
 pub struct UpdateCurrentUserRequest {
     pub nickname: Option<String>,
     pub avatar: Option<String>,
@@ -53,7 +53,7 @@ pub struct UpdateCurrentUserRequest {
 
 pub async fn update_current_user(
     Extension(token_data): Extension<Claims>,
-    req: UpdateCurrentUserRequest,
+    ValidatedJson(req): ValidatedJson<UpdateCurrentUserRequest>,
 ) -> Result<ApiOk<GetCurrentUserResponse>> {
     let user = update_user_by_user_id(token_data.sub, req).await?;
 
@@ -93,40 +93,4 @@ async fn update_user_by_user_id(user_id: i64, req: UpdateCurrentUserRequest) -> 
         ApiError::err_db()
     })?;
     Ok(user)
-}
-
-#[derive(Debug, Deserialize)]
-#[serde(rename_all = "camelCase")]
-pub struct UpdatePasswordRequest {
-    pub old_password: String,
-    pub new_password: String,
-    pub confirm_password: String,
-}
-
-pub async fn update_password(
-    Extension(token_data): Extension<Claims>,
-    req: UpdatePasswordRequest,
-) -> Result<ApiOk<()>> {
-    let user = get_user_by_user_id(token_data.sub).await?;
-
-    let is_valid = utils::hash::bcrypt_verify(&req.old_password, &user.password);
-    if !is_valid {
-        return Err(ApiError::err_param("Invalid old password".to_string()));
-    }
-
-    if req.new_password != req.confirm_password {
-        return Err(ApiError::err_param("New password and confirm password do not match".to_string()));
-    }
-
-    let new_password = utils::hash::bcrypt(&req.new_password);
-
-    let mut user: user::ActiveModel = user.into();
-    user.password = Set(new_password);
-
-    user.update(utils::db::conn()).await.map_err(|e| {
-        tracing::error!(error = ?e, "Failed to update user password");
-        ApiError::err_db()
-    })?;
-
-    Ok(ApiOk::new(()))
 }

@@ -3,13 +3,16 @@ use tower_http::trace::TraceLayer;
 
 pub mod auth;
 pub mod user;
+pub mod menu;
+pub mod permission;
+pub mod role;
 
 pub fn get_router() -> Router {
     let open = Router::new().nest("/auth", auth::get_open_router());
 
     let auth = Router::new()
         .nest("/auth", auth::get_router())
-        .nest("/user", user::get_router())
+        .nest("/users", user::get_router())
         .layer(axum::middleware::from_fn(utils::middleware::jwt::handle));
 
     let modules = open.merge(auth);
