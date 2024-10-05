@@ -42,7 +42,7 @@ pub async fn login_by_username(
     //  7 days to expire
     let expire_time = chrono::Utc::now().timestamp() + 60 * 60 * 24 * 7;
     let claims = utils::middleware::jwt::Claims {
-        sub: user.user_id.to_string(),
+        sub: user.user_id,
         exp: expire_time as usize,
     };
     let token = utils::jwt::generate_jwt_token(&claims).map_err(|e| {

@@ -9,7 +9,7 @@ use crate::{jwt::verify_jwt_token, response::ApiError};
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct Claims {
   // sub: subject, user id
-  pub sub: String,  
+  pub sub: i64,  
   // exp: expiration time
   pub exp: usize,
 }
@@ -18,17 +18,17 @@ pub struct Claims {
 pub async fn handle(mut request: Request, next: Next) -> Response {
   let token = request.headers().get(AUTHORIZATION);
   let token_data = match token {
-    None => Claims { sub: String::new(), exp: 0 },
+    None => Claims { sub: 0, exp: 0 },
     Some(token) => match token.to_str() {
       Ok(token) => {
         let token = token.replace("Bearer ", "");
         let token_data = verify_jwt_token::<Claims>(&token);
         match token_data {
           Ok(data) => data,
-          Err(_) => Claims { sub: String::new(), exp: 0 },
+          Err(_) => Claims { sub: 0, exp: 0 },
         }
       }
-      Err(_) => Claims { sub: String::new(), exp: 0 },
+      Err(_) => Claims { sub: 0, exp: 0 },
     },
   };
   if token_data.exp == 0 {

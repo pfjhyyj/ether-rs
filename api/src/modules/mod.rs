@@ -10,6 +10,7 @@ pub fn get_router() -> Router {
 
   let auth = Router::new()
     .nest("/auth", auth::get_router())
+    .nest("/user", user::get_router())
     .layer(axum::middleware::from_fn(utils::middleware::jwt::handle));
 
   let modules = open.merge(auth);

@@ -6,7 +6,7 @@ use utils::{middleware::jwt::Claims, response::{ApiError, ApiOk, Result}};
 pub async fn logout(
   Extension(token_data): Extension<Claims>,
 ) -> Result<ApiOk<()>> {
-  clear_token_cache(token_data.sub.parse().unwrap())?;
+  clear_token_cache(token_data.sub)?;
   Ok(ApiOk::new(()))
 }
 
