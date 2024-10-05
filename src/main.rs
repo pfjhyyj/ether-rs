@@ -1,4 +1,3 @@
-
 #[tokio::main]
 async fn main() {
     utils::env::load_config();
