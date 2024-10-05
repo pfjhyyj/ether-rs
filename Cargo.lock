@@ -909,6 +909,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "ether-rs"
+version = "0.1.0"
+dependencies = [
+ "api",
+ "entity",
+ "migration",
+ "tokio",
+ "utils",
+]
+
+[[package]]
 name = "event-listener"
 version = "2.5.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2146,17 +2157,6 @@ dependencies = [
  "spki",
  "subtle",
  "zeroize",
-]
-
-[[package]]
-name = "rust-ether"
-version = "0.1.0"
-dependencies = [
- "api",
- "entity",
- "migration",
- "tokio",
- "utils",
 ]
 
 [[package]]
