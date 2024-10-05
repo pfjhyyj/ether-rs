@@ -51,7 +51,7 @@ pub async fn login_by_username(
     };
     let token = utils::jwt::generate_jwt_token(&claims).map_err(|e| {
         tracing::error!(error = ?e, "Failed to generate jwt token");
-        ApiError::err_unknown("Failed to generate jwt token".to_string())
+        ApiError::err_unknown()
     })?;
 
     set_token_cache(&token, user.user_id)?;
@@ -71,7 +71,7 @@ async fn get_by_username(username: &str) -> Result<user::Model> {
         .await
         .map_err(|e| {
             tracing::error!(error = ?e, "Failed to get user by username");
-            ApiError::err_db("Failed to get user".to_string())
+            ApiError::err_db()
         })?
         .ok_or(ApiError::err_param(
             "Invalid username or password".to_string(),
@@ -85,16 +85,14 @@ fn set_token_cache(token: &str, user_id: i64) -> Result<()> {
         Ok(c) => c,
         Err(e) => {
             tracing::error!(error = ?e, "Failed to get redis connection");
-            return Err(ApiError::err_unknown(
-                "Failed to get redis connection".to_string(),
-            ));
+            return Err(ApiError::err_unknown());
         }
     };
 
     let key = format!("token:{}", user_id);
     let _: () = conn.set(key, token).map_err(|e| {
         tracing::error!(error = ?e, "Failed to set token cache");
-        ApiError::err_unknown("Failed to set token cache".to_string())
+        ApiError::err_unknown()
     })?;
 
     Ok(())

@@ -87,24 +87,24 @@ impl ApiError {
         }
     }
 
-    pub fn err_db(message: String) -> Self {
+    pub fn err_db() -> Self {
         Self {
             code: ApiResponseCode::DbError as i32,
-            message,
+            message: "An error occurred. Please try again later.".to_string(),
         }
     }
 
-    pub fn err_unknown(message: String) -> Self {
+    pub fn err_unknown() -> Self {
         Self {
             code: ApiResponseCode::UnknownError as i32,
-            message,
+            message: "An error occurred. Please try again later.".to_string(),
         }
     }
 
-    pub fn err_unauthorized(message: String) -> Self {
+    pub fn err_unauthenticated() -> Self {
         Self {
             code: ApiResponseCode::AuthError as i32,
-            message,
+            message: "Unauthenticated. Please login".to_string(),
         }
     }
 }

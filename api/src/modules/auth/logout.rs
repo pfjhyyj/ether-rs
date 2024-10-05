@@ -15,16 +15,14 @@ fn clear_token_cache(user_id: i64) -> Result<()> {
         Ok(c) => c,
         Err(e) => {
             tracing::error!(error = ?e, "Failed to get redis connection");
-            return Err(ApiError::err_unknown(
-                "Failed to get redis connection".to_string(),
-            ));
+            return Err(ApiError::err_unknown());
         }
     };
 
     let key = format!("token:{}", user_id);
     let _: () = conn.del(key).map_err(|e| {
         tracing::error!(error = ?e, "Failed to clear token cache");
-        ApiError::err_unknown("Failed to clear token cache".to_string())
+        ApiError::err_unknown()
     })?;
 
     Ok(())

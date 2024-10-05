@@ -34,7 +34,7 @@ pub async fn handle(mut request: Request, next: Next) -> Response {
         },
     };
     if token_data.exp == 0 {
-        return ApiError::err_unauthorized("Token invalid".to_string()).into_response();
+        return ApiError::err_unauthenticated("Token invalid".to_string()).into_response();
     }
 
     let mut conn = match crate::redis::redis_pool().get() {
@@ -48,11 +48,11 @@ pub async fn handle(mut request: Request, next: Next) -> Response {
     let key = format!("token:{}", token_data.sub);
     let token_result: Result<String, ApiError> = conn
         .get(key)
-        .map_err(|_| ApiError::err_unauthorized("Token invalid".to_string()));
+        .map_err(|_| ApiError::err_unauthenticated("Token invalid".to_string()));
     match token_result {
         Ok(token) => {
             if token.is_empty() {
-                return ApiError::err_unauthorized("Token invalid".to_string()).into_response();
+                return ApiError::err_unauthenticated("Token invalid".to_string()).into_response();
             }
         }
         Err(e) => return e.into_response(),

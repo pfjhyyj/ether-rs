@@ -39,7 +39,7 @@ async fn create_user_by_register_request(req: RegisterByUsernameRequest) -> Resu
         .await
         .map_err(|e| {
             tracing::error!(error = ?e, "Failed to query user by username");
-            ApiError::err_db("Failed to query user by username".to_string())
+            ApiError::err_db()
         })?;
 
     if user.is_some() {
@@ -56,7 +56,7 @@ async fn create_user_by_register_request(req: RegisterByUsernameRequest) -> Resu
 
     let new_user = new_user.insert(db).await.map_err(|e| {
         tracing::error!(error = ?e, "Failed to insert new user");
-        ApiError::err_db("Failed to create new user".to_string())
+        ApiError::err_db()
     })?;
 
     Ok(new_user)
