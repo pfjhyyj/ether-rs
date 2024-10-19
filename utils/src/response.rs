@@ -119,6 +119,6 @@ pub type Result<T> = std::result::Result<T, ApiError>;
 
 #[derive(Debug, Serialize)]
 pub struct PageResponse<T> {
-    pub total: i64,
+    pub total: u64,
     pub data: Vec<T>,
 }
