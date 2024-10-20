@@ -6,7 +6,7 @@ enum Menu {
     MenuId,
     ParentId,
     Name,
-    Type,
+    MenuType,
     Icon,
     Path,
     Sort,
@@ -44,9 +44,10 @@ impl MigrationTrait for Migration {
                             .not_null()
                     )
                     .col(
-                        ColumnDef::new(Menu::Type)
+                        ColumnDef::new(Menu::MenuType)
                             .integer()
-                            .null()
+                            .not_null()
+                            .default(0)
                     )
                     .col(
                         ColumnDef::new(Menu::Icon)
@@ -61,7 +62,8 @@ impl MigrationTrait for Migration {
                     .col(
                         ColumnDef::new(Menu::Sort)
                             .integer()
-                            .null()
+                            .default(0)
+                            .not_null()
                     )
                     .col(
                         ColumnDef::new(Menu::Extra)
