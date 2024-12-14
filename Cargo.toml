@@ -10,5 +10,5 @@ members = [".", "api", "entity", "migration", "utils"]
 api = { path = "api" }
 entity = { path = "entity" }
 migration = { path = "migration" }
-tokio = { version = "1.40.0", features = ["full"] }
+tokio = { version = "1.42.0", features = ["full"] }
 utils = { path = "utils" }
