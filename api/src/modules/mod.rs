@@ -14,6 +14,8 @@ pub fn get_router() -> Router {
         .nest("/auth", auth::get_router())
         .nest("/users", user::get_router())
         .nest("/menus", menu::get_router())
+        .nest("/permissions", permission::get_router())
+        .nest("/roles", role::get_router())
         .layer(axum::middleware::from_fn(utils::middleware::jwt::handle));
 
     let modules = open.merge(auth);

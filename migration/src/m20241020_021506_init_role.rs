@@ -24,6 +24,8 @@ impl MigrationTrait for Migration {
                             .not_null()
                             .unique_key(),
                     )
+                    .col(ColumnDef::new(Role::ReferenceType).string().null())
+                    .col(ColumnDef::new(Role::ReferenceId).big_integer().null())
                     .col(ColumnDef::new(Role::Name).string().not_null())
                     .col(ColumnDef::new(Role::Description).string().null())
                     .to_owned(),
@@ -43,6 +45,8 @@ enum Role {
     Table,
     RoleId,
     Code,
+    ReferenceType,
+    ReferenceId,
     Name,
     Description,
 }

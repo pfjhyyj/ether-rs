@@ -19,16 +19,19 @@ impl MigrationTrait for Migration {
                             .primary_key(),
                     )
                     .col(
-                        ColumnDef::new(Permission::Name)
+                        ColumnDef::new(Permission::Object)
                             .string()
-                            .not_null()
-                            .unique_key(),
+                            .not_null(),
                     )
                     .col(
-                        ColumnDef::new(Permission::Target)
+                        ColumnDef::new(Permission::Action)
                             .string()
-                            .not_null()
-                            .unique_key(),
+                            .not_null(),
+                    )
+                    .col(
+                        ColumnDef::new(Permission::Name)
+                            .string()
+                            .null(),
                     )
                     .col(
                         ColumnDef::new(Permission::Description)
@@ -51,7 +54,8 @@ impl MigrationTrait for Migration {
 enum Permission {
     Table,
     PermissionId,
+    Object,
+    Action,
     Name,
-    Target,
     Description,
 }
