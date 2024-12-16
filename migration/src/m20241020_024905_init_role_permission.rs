@@ -1,5 +1,7 @@
 use sea_orm_migration::prelude::*;
 
+use crate::{m20241020_021506_init_role::Role, m20241020_021519_init_permission::Permission};
+
 #[derive(DeriveMigrationName)]
 pub struct Migration;
 
@@ -27,6 +29,22 @@ impl MigrationTrait for Migration {
                         ColumnDef::new(RolePermission::PermissionId)
                             .big_integer()
                             .not_null(),
+                    )
+                    .foreign_key(
+                        ForeignKey::create()
+                            .name("fk-role_permission-role_id")
+                            .from(RolePermission::Table, RolePermission::RoleId)
+                            .to(Role::Table, Role::RoleId)
+                            .on_delete(ForeignKeyAction::Cascade)
+                            .on_update(ForeignKeyAction::Cascade)
+                    )
+                    .foreign_key(
+                        ForeignKey::create()
+                            .name("fk-role_permission-permission_id")
+                            .from(RolePermission::Table, RolePermission::PermissionId)
+                            .to(Permission::Table, Permission::PermissionId)
+                            .on_delete(ForeignKeyAction::Cascade)
+                            .on_update(ForeignKeyAction::Cascade)
                     )
                     .to_owned(),
             )

@@ -51,7 +51,7 @@ impl MigrationTrait for Migration {
 }
 
 #[derive(DeriveIden)]
-enum Permission {
+pub enum Permission {
     Table,
     PermissionId,
     Object,
